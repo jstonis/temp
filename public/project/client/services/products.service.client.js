@@ -9,16 +9,6 @@
     function ProductsService($rootScope,$http) {
         var currentProducts=[];
         currentProducts = {
-            products: [
-                {        "_id":123, "image":"images/bmw wax.jpg",            "productName":"BMW Express Wax", "carMakes":["BMW"],
-                        "description": "exterior", "accessory":true, "kit": false, "numOfLikes": 0, "reviews": [], "price":40
-                },
-                {        "_id":124, "image":"images/toyota washer fluid.jpg", "productName":"Toyota Windshield Washer Fluid",
-                        "carMakes": ["Toyota"], "description": "exterior", "accessory": true, "kit": true, "numOfLikes": 0, "reviews": [], "price": 20
-                }
-            ],
-            reviews: [{"productId": 123, "userId": 123, "review": "Good Product"}]
-            ,
             getCurrentProduct: getCurrentProduct,
             findAllProducts: findAllProducts,
             setCurrentProduct: setCurrentProduct,
@@ -41,7 +31,7 @@
         return currentProducts;
 
         function findAllProducts(){
-         return currentProducts.products;
+            return $http.get('/api/project/product');
         }
         function setCurrentProduct (product) {
             $rootScope.currentProduct = product;
@@ -94,19 +84,20 @@
         }
 
         function getCarMakes() {
-            var carMakes = [];
+            return $http.get('/api/project/product/car-makes');
+            // var carMakes = [];
 
-            for (var u in currentProducts.products) {
-                for (var j in currentProducts.products[u].carMakes) {
-                    console.log(currentProducts.products[u].carMakes[j]);
-                    if (carMakes.indexOf(currentProducts.products[u].carMakes[j])==-1) {
-                        console.log("here!");
-                        carMakes.push(currentProducts.products[u].carMakes[j])
-                    }
-                }
-            }
+            // for (var u in currentProducts.products) {
+            //     for (var j in currentProducts.products[u].carMakes) {
+            //         console.log(currentProducts.products[u].carMakes[j]);
+            //         if (carMakes.indexOf(currentProducts.products[u].carMakes[j])==-1) {
+            //             console.log("here!");
+            //             carMakes.push(currentProducts.products[u].carMakes[j])
+            //         }
+            //     }
+            // }
 
-            return carMakes;
+            // return carMakes;
 
         }
 
@@ -165,16 +156,8 @@
             return null;
         }
 
-        function getReviewsByProduct(product){
-            var productReviews=[];
-
-            for (var u in currentProducts.reviews) {
-                if(currentProducts.reviews[u].productId=product._id){
-                     productReviews.push(currentProducts.reviews[u]);
-                }
-            }
-            return productReviews;
-
+        function getReviewsByProduct(productId){
+            return $http.get("/api/project/product/"+productId+"/reviews");
         }
 
         function getReviewsByUser(user){
@@ -188,24 +171,20 @@
             return productReviews;
 
         }
-        function getReviews() {
-            return currentProducts.reviews;
+        function getReviews(productId) {
+            return $http.get("/api/project/product/"+productId+"/reviews");
         }
 
-    function getImageByProductId(productId){
-        for (var u in currentProducts.products) {
-            if(currentProducts.products[u]._id=productId){
-               return currentProducts.products[u].image;
-            }
-        }
-
-    }
-        function getProductById(productId){
+        function getImageByProductId(productId){
             for (var u in currentProducts.products) {
                 if(currentProducts.products[u]._id=productId){
-                    return currentProducts.products[u];
+                   return currentProducts.products[u].image;
                 }
             }
+        }
+
+        function getProductById(productId){ 
+            return $http.get("/api/project/product/"+productId);
         }
 
     }

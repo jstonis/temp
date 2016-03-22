@@ -8,8 +8,15 @@
 
 
     function CarBrandsController($scope, UserService, $location, $rootScope, ProductsService){
+    	var self = this;
 
-        $scope.carMakes=ProductsService.getCarMakes();
+    	ProductsService
+        	.getCarMakes()
+        	.then(function(res){
+        		self.carMakes = res.data;
+        	},function(err){
+        		self.message ="Error fetching carmakes"
+        	});
 
 
     }

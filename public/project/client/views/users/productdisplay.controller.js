@@ -8,31 +8,35 @@
 
 
     function ProductDisplayController($scope, UserService, $location, $rootScope, $routeParams, ProductsService){
-        $scope.id=$routeParams.id;
-        $scope.product=ProductsService.getProductById($routeParams.id);
-        var selectedProduct=$scope.product;
+        var productId = $routeParams.productId,
+            self = this;
+
+        ProductsService.getProductById(productId)
+            .then(function(res){
+                self.products = res.data;
+            },function(err){
+                self.message="Unable to fetch products"
+            });
+
+
         $scope.addToCart=addToCart;
         $scope.likeProduct=likeProduct;
-        var reviews=ProductsService.getReviewsByProduct($scope.product);
-        var allReviews=[];
-        for (var u in reviews){
-            var review={userId: reviews[u].userId, productId: reviews[u].productId, review: reviews[u].review, name: UserService.getUsersNameById(reviews[u].userId)};
-            allReviews.push(review);
-        }
-        $scope.reviews=allReviews;
 
-
+        ProductsService.getReviewsByProduct(productId)
+            .then(function(res){
+                self.reviews = res.data;
+            },function(err){
+                self.message="Unable to fetch reviews"
+            });
 
         function addToCart(selectedProduct){
             UserService.addToCart(selectedProduct)
             $location.url("/cart");
         }
+
         function likeProduct(){
-                UserService.addLikedProduct(selectedProduct);
+                UserService.addLikedProduct();
         }
-
-
-
 
     }
 

@@ -25,7 +25,8 @@
   "dependencies": {
     "body-parser": "^1.15.0",
     "express": "~3.4.4",
-    "express-session": "^1.13.0"
+    "express-session": "^1.13.0",
+    "lodash": "^4.6.1"
   },
   "devDependencies": {},
   "bundleDependencies": [],

@@ -8,10 +8,15 @@
 
 
     function HomeController($scope, ProductsService, $location, $rootScope, UserService){
-        $scope.products=ProductsService.findAllProducts();
-        console.log($scope.products);
-
-    }
+    	var self = this;
+       	ProductsService
+       		.findAllProducts()
+       		.then(function(res){
+       			self.products = res.data;
+       		},function(err){
+       			self.message = "Error geting products"
+       		});
+   	}
 
 
 })();

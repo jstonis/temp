@@ -6,34 +6,31 @@
 
     function HeaderController($scope, $location, $rootScope, UserService){
         $scope.$location = $location;
-       $scope.isAdmin=isAdmin;
+        $scope.isAdmin=isAdmin;
         $scope.isLoggedIn=isLoggedIn;
         $scope.logout=logout;
-        $scope.isLoggedOut=isLoggedOut;
         $scope.currentNotHome=currentNotHome;
 
         function isAdmin(){
-            for (var u in $rootScope.currentUser.roles) {
-                if ($rootScope.currentUser.roles[u] === "admin") {
-                    return true;
+            if($rootScope.currentUser){
+                for (var u in $rootScope.currentUser.roles) {
+                    if ($rootScope.currentUser.roles[u] === "admin") {
+                        return true;
+                    }
                 }
             }
             return false;
         }
-        function isLoggedOut(){
-            if($rootScope.currentUser){
-                return false;
-            }
-            else{
-                return true;}
-        }
+        //Check if user is logged in
         function isLoggedIn(){
             if($rootScope.currentUser){
+                console.log("User is logged in"+$rootScope.currentUser.username)
                 $scope.user=$rootScope.currentUser;
                 return true;
             }
             else{
-                return false;}
+                return false;
+            }
         }
         function logout(){
             UserService.setCurrentUser(null);

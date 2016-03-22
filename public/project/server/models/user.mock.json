@@ -1,26 +1,45 @@
-[
-  {
-    "_id": "123qwe",
-    "username": "alice",
-    "password": "alice",
+[{
+    "_id": 123,
     "firstName": "Alice",
     "lastName": "Wonderland",
-    "email": "alice@alice.com"
-  },
-  {
-    "_id": "234wer",
+    "username": "alice",
+    "password": "alice",
+    "roles": ["student"],
+    "cartItems": [],
+    "likedProducts": [],
+    "following": [234, 345]
+}, {
+    "_id": 234,
+    "firstName": "Bob",
+    "lastName": "Hope",
     "username": "bob",
     "password": "bob",
-    "firstName": "Bob",
-    "lastName": "Marley",
-    "email": "bob@marley.com"
-  },
-  {
-    "_id": "345ert",
-    "username": "charlie",
-    "password": "charlie",
+    "roles": ["admin"],
+    "cartItems": []
+}, {
+    "_id": 345,
     "firstName": "Charlie",
     "lastName": "Brown",
-    "email": "charlie@brown.com"
-  }
-]
+    "username": "charlie",
+    "password": "charlie",
+    "roles": ["faculty"],
+    "cartItems": []
+}, {
+    "_id": 456,
+    "firstName": "Dan",
+    "lastName": "Craig",
+    "username": "dan",
+    "password": "dan",
+    "roles": ["faculty", "admin"],
+    "cartItems": []
+}, {
+    "_id": 567,
+    "firstName": "Edward",
+    "lastName": "Norton",
+    "username": "ed",
+    "password": "ed",
+    "roles": ["student"],
+    "cartItems": [],
+    "likedProducts": [],
+    "following": []
+}]

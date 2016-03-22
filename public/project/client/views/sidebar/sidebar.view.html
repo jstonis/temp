@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <div class="col-sm-3 col-md-2 sidebar" ng-controller="SidebarController">
     <ul class="nav nav-sidebar">
         <li ng-class="{'active' : $location.url().indexOf('home') != -1}" ng-hide="isAdmin()"><a href="#/carbrands">Car Makes</a></li>
@@ -11,7 +8,5 @@
         <li ng-class="{'active' : $location.url().indexOf('accessories') != -1}" ng-hide="isAdmin()"><a href="#/accessories">Accessories</a></li>
         <li ng-class="{'active' : $location.url().indexOf('carkits') != -1}" ng-hide="isAdmin()"><a href="#/carkits">Car Kits</a></li>
 
-
     </ul>
-
 </div>

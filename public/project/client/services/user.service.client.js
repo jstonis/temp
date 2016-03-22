@@ -10,42 +10,6 @@
     function UserService($rootScope) {
         var currentUsers = [];
         currentUsers = {
-            users: [
-                {
-                    "_id": 123,
-                    "firstName": "Alice",
-                    "lastName": "Wonderland",
-                    "username": "alice",
-                    "password": "alice",
-                    "roles": ["student"],
-                    "cartItems": [],
-                    "likedProducts": [],
-                    "following": [234, 345]
-                },
-                {
-                    "_id": 234, "firstName": "Bob", "lastName": "Hope",
-                    "username": "bob", "password": "bob", "roles": ["admin"], "cartItems": []
-                },
-                {
-                    "_id": 345, "firstName": "Charlie", "lastName": "Brown",
-                    "username": "charlie", "password": "charlie", "roles": ["faculty"], "cartItems": []
-                },
-                {
-                    "_id": 456, "firstName": "Dan", "lastName": "Craig",
-                    "username": "dan", "password": "dan", "roles": ["faculty", "admin"], "cartItems": []
-                },
-                {
-                    "_id": 567,
-                    "firstName": "Edward",
-                    "lastName": "Norton",
-                    "username": "ed",
-                    "password": "ed",
-                    "roles": ["student"],
-                    "cartItems": [],
-                    "likedProducts": [],
-                    "following": []
-                }
-            ],
             createUser: createUser,
             findUserByUsername: findUserByUsername,
             findUserByCredentials: findUserByCredentials,
@@ -98,7 +62,8 @@
             return null;
         }
 
-        function findUserByCredentials(username, password, callback) {
+        function findUserByCredentials(username, password) {
+            return $http.post('/api/project/')
             for (var u in currentUsers.users) {
                 //  console.log(currentUsers.users[u].username);
                 if (currentUsers.users[u].username === username &&

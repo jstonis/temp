@@ -24,7 +24,8 @@
                  })
                  .when("/home", {
                  templateUrl: "views/home/home.view.html",
-                   controller: "HomeController"
+                   controller: "HomeController",
+                   controllerAs : 'model'
 
                  })
                  .when("/forms", {
@@ -63,7 +64,7 @@
                     templateUrl: "views/users/orderconfirmation.html",
                     controller: "OrderConfirmationController"
                 })
-                .when("/productdisplay/:id", {
+                .when("/productdisplay/:productId", {
                     templateUrl: "views/users/productdisplay.html",
                     controller: "ProductDisplayController"
                 })
