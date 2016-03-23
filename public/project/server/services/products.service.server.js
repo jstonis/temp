@@ -15,6 +15,9 @@ module.exports = function(app) {
     app.get("/api/project/product/:productId", getProductById);
     app.delete("/api/project/product/:productId", deleteProductById);
     app.get("/api/project/product/:productId/reviews", getProductReviews);
+
+    app.get("/api/project/user/reviews/:userId", getUserReviews);
+    
     app.post("/api/project/product", createProduct);
 
     
@@ -64,6 +67,18 @@ module.exports = function(app) {
         })
         res.json(data)
         
+    }
+
+    function getUserReviews(req,res){
+        var userId = req.params.userId;
+        var reviews = _.filter(reviewModel,{userId:userId});
+        reviews.forEach(function(review){
+            var product =_.find(productModel,{_id: review.productId})
+            if(product){
+                review.product = product
+            }
+        })
+        res.send(reviews);
     }
 
     function createProduct(req, res){

@@ -25,6 +25,22 @@ function ProfileController($scope, $location, $routeParams, UserService, Product
             $scope.err = "err getting profile"
         });
 
+    ProductsService
+        .getReviewsByUser(userId)
+        .then(function(res){
+            $scope.reviews = res.data
+        },function(err){
+            $scope.err = "err getting reviews"
+        });
+
+    UserService
+        .getFollowersByUserId(userId)
+        .then(function(res){
+            $scope.followers = res.data
+        },function(err){
+            $scope.err = "err getting followers"
+        });
+
     // var userReviews=ProductsService.getReviewsByUser($scope.user);
 
     // //$scope.userFollowings=getUsersByIds(followers);
@@ -99,6 +115,7 @@ function ProfileController($scope, $location, $routeParams, UserService, Product
         return userReviewsWithImage;
 
     }
+
     function userIsCurrentUser(){
         if($scope.user._id==$rootScope.currentUser._id){
             return true;

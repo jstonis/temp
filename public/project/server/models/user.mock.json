@@ -7,7 +7,7 @@
     "roles": ["student"],
     "cartItems": [],
     "likedProducts": [],
-    "following": [234, 345],
+    "following": ["234", "345"],
     "email" : "aliceinwonderland@gmail.com"
 }, {
     "_id": "234",

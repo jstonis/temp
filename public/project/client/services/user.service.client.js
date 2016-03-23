@@ -76,15 +76,15 @@
         }
 
         function findAllUsers() {
-            return $http.get("/api/assignment/user");
+            return $http.get("/api/project/user");
         }
 
         function deleteUserById(userId) {
-            return $http.delete("/api/assignment/user/"+userId);
+            return $http.delete("/api/project/user/"+userId);
         }
 
         function getFollowersByUserId(userId) {
-
+            return $http.get("/api/project/user/followers/"+userId);
         }
 
         function getUsersNameById(userId) {

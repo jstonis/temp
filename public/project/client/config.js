@@ -24,7 +24,10 @@
                 .when("/profile/:userId", {
                     templateUrl: "views/users/profile.view.html",
                     controller: "ProfileController",
-                    controllerAs: 'model'
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
                 .when("/admin", {
                  templateUrl: "views/admin/admin.view.html",

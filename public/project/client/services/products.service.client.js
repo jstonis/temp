@@ -97,8 +97,9 @@
             return $http.get("/api/project/product/"+productId+"/reviews");
         }
 
-        function getReviewsByUser(user){
-            return $http.get()
+        //get reviews by a particular user
+        function getReviewsByUser(userId){
+            return $http.get("/api/project/user/reviews/"+userId);
 
         }
         function getReviews(productId) {

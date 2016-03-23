@@ -74,9 +74,9 @@
         <table class="table table-striped">
             <thead>Following</thead>
             <tbody>
-            <tr ng-repeat="userFollowing in userFollowings">
+            <tr ng-repeat="follower in followers">
                 <td>
-                    <a href="#/profile/{{userFollowing._id}}">{{userFollowing.username}}</a>
+                    <a href="#/profile/{{follower._id}}">@{{follower.username}}</a>
                 </td>
             </tr>
             </tbody>
@@ -88,12 +88,12 @@
             <table class="table table-striped">
                 <thead>Reviews</thead>
                 <tbody>
-                <tr ng-repeat="viewReviews in profileViewReviews">
+                <tr ng-repeat="review in reviews">
                     <td>
-                        <a href="#/productdisplay/{{viewReviews.productId}}"><img height="100px" ng-src="{{viewReviews.image}}"/></a>
+                        <a href="#/productdisplay/{{review.productId}}"><img height="100px" ng-src="{{review.product.image}}"/></a>
                     </td>
                     <td>
-                       {{viewReviews.review}}
+                       {{review.review}}
                     </td>
                 </tr>
                 </tbody>

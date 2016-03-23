@@ -6,6 +6,7 @@ module.exports = function(app, model) {
     app.get("/api/project/user/logout", logout);
     app.get("/api/project/user/loggedin",loggedin);
     app.post("/api/project/user/register", register);
+    app.get("/api/project/user/followers/:userId", getFollowers);
     app.post("/api/project/user", register);
     app.get("/api/project/user", findAllUsers);
     app.get("/api/project/user/:username", findUserByUsername);
@@ -125,5 +126,22 @@ module.exports = function(app, model) {
     function findUserByUserId(req,res){
         var userId = req.params.userId;
         res.send(_.find(userModel,{_id:userId}));
+    }
+
+    function getFollowers(req,res){
+        var userId = req.params.userId;
+        var user = _.find(userModel,{_id:userId});
+        if(!user){
+            res.send({message:"no such user"})
+            return
+        }
+        var followers =[];
+        user.following.forEach(function(userId){
+            var user =_.find(userModel,{_id: userId})
+            if(user){
+                followers.push(user)
+            }
+        })
+        res.send(followers);
     }
 }

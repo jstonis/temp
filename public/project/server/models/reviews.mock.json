@@ -1,5 +1,9 @@
  [{
-     "productId": 123,
-     "userId": 123,
+     "productId": "123",
+     "userId": "123",
      "review": "Good Product"
+ },{
+     "productId": "125",
+     "userId": "123",
+     "review": "Awesome Product"
  }]
