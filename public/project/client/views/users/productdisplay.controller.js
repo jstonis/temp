@@ -13,7 +13,7 @@
 
         ProductsService.getProductById(productId)
             .then(function(res){
-                self.products = res.data;
+                self.product = res.data;
             },function(err){
                 self.message="Unable to fetch products"
             });
@@ -22,16 +22,30 @@
         $scope.addToCart=addToCart;
         $scope.likeProduct=likeProduct;
 
-        ProductsService.getReviewsByProduct(productId)
+        ProductsService
+            .getReviewsByProduct(productId)
             .then(function(res){
                 self.reviews = res.data;
             },function(err){
                 self.message="Unable to fetch reviews"
             });
 
-        function addToCart(selectedProduct){
-            UserService.addToCart(selectedProduct)
-            $location.url("/cart");
+        function addToCart(){
+            if(!$rootScope.currentUser){
+                $scope.message ="Please sign in";
+                return
+            }
+            UserService
+                .addToCart(self.product)
+                .then(function(res){
+                    if(res.data.added = true){
+                        $location.url("/cart");
+                    }else{
+                        $scope.message = res.data.message;
+                    }
+                },function(err){
+                    $scope.message ="err adding to cart"
+                });
         }
 
         function likeProduct(){

@@ -1,5 +1,5 @@
 [{
-    "_id": 123,
+    "_id": "123",
     "firstName": "Alice",
     "lastName": "Wonderland",
     "username": "alice",
@@ -7,9 +7,10 @@
     "roles": ["student"],
     "cartItems": [],
     "likedProducts": [],
-    "following": [234, 345]
+    "following": [234, 345],
+    "email" : "aliceinwonderland@gmail.com"
 }, {
-    "_id": 234,
+    "_id": "234",
     "firstName": "Bob",
     "lastName": "Hope",
     "username": "bob",
@@ -17,7 +18,7 @@
     "roles": ["admin"],
     "cartItems": []
 }, {
-    "_id": 345,
+    "_id": "345",
     "firstName": "Charlie",
     "lastName": "Brown",
     "username": "charlie",
@@ -25,7 +26,7 @@
     "roles": ["faculty"],
     "cartItems": []
 }, {
-    "_id": 456,
+    "_id": "456",
     "firstName": "Dan",
     "lastName": "Craig",
     "username": "dan",
@@ -33,7 +34,7 @@
     "roles": ["faculty", "admin"],
     "cartItems": []
 }, {
-    "_id": 567,
+    "_id": "567",
     "firstName": "Edward",
     "lastName": "Norton",
     "username": "ed",

@@ -1,4 +1,4 @@
-/**
+    /**
  * Created by Joscelyn on 2/27/2016.
  */
 
@@ -7,12 +7,13 @@
         .module("FormBuilderApp")
         .factory("UserService", UserService);
 
-    function UserService($rootScope) {
+    function UserService($rootScope,$http) {
         var currentUsers = [];
         currentUsers = {
             createUser: createUser,
             findUserByUsername: findUserByUsername,
-            findUserByCredentials: findUserByCredentials,
+            login: login,
+            logout: logout,
             findAllUsers: findAllUsers,
             deleteUserById: deleteUserById,
             updateUser: updateUser,
@@ -21,6 +22,7 @@
             getFollowersByUserId: getFollowersByUserId,
             getUsersNameById: getUsersNameById,
             addToCart: addToCart,
+            removeFromCart : removeFromCart,
             findUserById: findUserById,
             getArrayOfUsersByIds: getArrayOfUsersByIds,
             addLikedProduct: addLikedProduct
@@ -32,47 +34,32 @@
         }
 
         function getCurrentUser() {
-            return $rootScope.currentUser;
+            return $http.get("/api/project/user/loggedin");
         }
 
-        function findUserById(id) {
-            for (var u in currentUsers.users) {
-                if (currentUsers.users[u]._id == id) {
-                    return currentUsers.users[u];
-                }
-            }
-            return null;
+        function findUserById(userId) {
+            return $http.get("/api/project/userid/"+userId);
         }
 
-        function createUser(user, callback) {
-            var user = {
-                _id: (new Date).getTime(), username: user.username, password: user.password
-            };
-            currentUsers.users.push(user);
-            callback = user;
-            return callback;
+        function createUser (user) {
+
+            return $http.post("/api/project/user",user);
         }
 
         function findUserByUsername(username) {
-            for (var u in currentUsers.users) {
-                if (currentUsers.users[u].username === username) {
-                    return currentUsers.users[u];
-                }
-            }
-            return null;
+            return $http({
+                url: "/api/project/user",
+                method: "GET",
+                params: {username: username}
+            });
         }
 
-        function findUserByCredentials(username, password) {
-            return $http.post('/api/project/')
-            for (var u in currentUsers.users) {
-                //  console.log(currentUsers.users[u].username);
-                if (currentUsers.users[u].username === username &&
-                    currentUsers.users[u].password === password) {
-                    callback = currentUsers.users[u];
-                    return callback;
-                }
-            }
-            return null;
+        function login(creds) {
+            return $http.post('/api/project/user/login',creds);
+        }
+
+        function logout(){
+            return $http.get('/api/project/user/logout')
         }
 
         function updateUser(userId, user, callback) {
@@ -88,30 +75,15 @@
 
         }
 
-        function findAllUsers(callback) {
-            callback = currentUsers.users;
-            return callback;
-
+        function findAllUsers() {
+            return $http.get("/api/assignment/user");
         }
 
-        function deleteUserById(userId, callback) {
-            for (var u in currentUsers.users) {
-                if (currentUsers.users[u]._id === userId) {
-                    currentUsers.users[u].remove();
-                    callback = currentUsers.users;
-                    return callback;
-                }
-            }
-            return null;
+        function deleteUserById(userId) {
+            return $http.delete("/api/assignment/user/"+userId);
         }
 
         function getFollowersByUserId(userId) {
-            for (var u in currentUsers.users) {
-                if (currentUsers.users[u]._id === userId) {
-                    return currentUsers.users[u].following;
-                }
-            }
-            return null;
 
         }
 
@@ -124,11 +96,13 @@
             return null;
         }
 
-        function addToCart(accessory) {
-            if ($rootScope.currentUser != null) {
-                $rootScope.currentUser.cartItems.push(accessory);
-            }
+        function addToCart(product) {
+            return $http.post("/api/project/user/cart/add",product);
+        }
 
+        function removeFromCart(productId){
+            var data = {productId:productId};
+            return $http.post("/api/project/user/cart/remove",data);
         }
 
         function getArrayOfUsersByIds(ids) {
@@ -147,7 +121,7 @@
         }
 
         function addLikedProduct(product) {
-            $rootScope.currentUser.likedProducts.push(product);
+            //$rootScope.currentUser.likedProducts.push(product);
         }
     }
 })();

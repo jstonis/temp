@@ -1,16 +1,17 @@
  [{
-     "_id": 123,
+     "_id": "123",
      "image": "images/bmw wax.jpg",
      "productName": "BMW Express Wax",
      "carMakes": ["BMW"],
-     "description": "exterior",
+     "description": "exterior polish for bmw",
      "accessory": true,
      "kit": false,
-     "numOfLikes": 0,
+     "numOfLikes": 1,
+     "carKit" : false,
      "reviews": [],
      "price": 40
  }, {
-     "_id": 124,
+     "_id": "124",
      "image": "images/toyota washer fluid.jpg",
      "productName": "Toyota Windshield Washer Fluid",
      "carMakes": ["Toyota"],
@@ -18,6 +19,31 @@
      "accessory": true,
      "kit": true,
      "numOfLikes": 0,
+     "carKit" : false,
      "reviews": [],
      "price": 20
+ }, {
+     "_id": "125",
+     "image": "images/toyota washer fluid.jpg",
+     "productName": "dashboard polish",
+     "carMakes": ["Toyota","Tesla"],
+     "description": "interior",
+     "accessory": true,
+     "kit": true,
+     "numOfLikes": 0,
+     "carKit" : false,
+     "reviews": [],
+     "price": 50
+ }, {
+     "_id": "126",
+     "image": "images/toyota washer fluid.jpg",
+     "productName": "Car Kit 1",
+     "carMakes": ["Toyota","Ferrari"],
+     "description": "interior",
+     "accessory": false,
+     "kit": true,
+     "numOfLikes": 0,
+     "carKit" : true,
+     "reviews": [],
+     "price": 50
  }]

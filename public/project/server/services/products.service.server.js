@@ -3,13 +3,21 @@ var productModel = require('../models/products.mock.json'),
     userModel = require('../models/user.mock.json'),
     _ = require('lodash');
 
-module.exports = function(app, model) {
+module.exports = function(app) {
     app.get("/api/project/product", findAllProducts);
+
+    app.get("/api/project/product/car-makes", getCarMakes);
+    app.get('/api/project/product/exterior', getExterior);
+    app.get('/api/project/product/interior', getInterior);
+    app.get('/api/project/product/accessory', getAccessory);
+    app.get('/api/project/product/carkit', getCarKit);
+    
     app.get("/api/project/product/:productId", getProductById);
+    app.delete("/api/project/product/:productId", deleteProductById);
     app.get("/api/project/product/:productId/reviews", getProductReviews);
     app.post("/api/project/product", createProduct);
 
-    app.get("/api/project/product/car-makes", getCarMakes);
+    
     //app.post("/api/project/register", register);
 
     function findAllProducts(req, res) {
@@ -19,17 +27,22 @@ module.exports = function(app, model) {
     function getProductById(req, res) {
         var productId = req.params.productId;
         if(!productId){
-            res.send({message:"ProductId is requires"});
+            res.send({message:"ProductId is required"});
             return;
         }
 
-        var data = _.find(productModel,{_id:productId})
-        if(data){
-            res.json(data)
-        }else{
-            res.send({message:"No such product"});
-        }
-        
+        var data = {};
+        productModel.forEach(function(product){
+            if(product._id == productId)
+                data = product;
+        })
+        res.send(data);
+    }
+
+    function deleteProductById(req,res){
+        var productId = req.params.productId;
+        _.remove(productModel,{_id:productId})
+        res.send(productModel);
     }
 
     function getProductReviews(req, res) {
@@ -38,8 +51,11 @@ module.exports = function(app, model) {
             res.send({message:"ProductId is requires"});
             return;
         }
-
-        var data = _.find(reviewModel,{_id:productId});
+        var data = [];
+        reviewModel.forEach(function(review){
+            if(review.productId == productId)
+                data.push(review);
+        })
 
         //populate username
         data.forEach(function(review){
@@ -50,11 +66,44 @@ module.exports = function(app, model) {
         
     }
 
-    function createProduct(req, res) {
-        res.json(req.session.currentUser);
+    function createProduct(req, res){
+        var product = req.body;
+
+        if(!product){
+            res.send({message:"product is required"});
+            return
+        }
+        product._id = (new Date).getTime();
+        productModel.push(product);
+        res.send({message:"OK"});
     }
 
-    function getCarMakes(req, res) {
+    function getCarMakes(req,res) {
+        var carMakes=[];
+        productModel.forEach(function(product){
+            if(product.carMakes){
+                product.carMakes.forEach(function(carMake){
+                    if(carMakes.indexOf(carMake) == -1)
+                        carMakes.push(carMake)
+                })
+            }
+        })
+        res.send(carMakes);
+    }
 
+    function getExterior(req,res){
+        res.send(_.filter(productModel,{description : 'exterior'}));
+    }
+
+    function getInterior(req,res){
+        res.send(_.filter(productModel,{description : 'interior'}));
+    }
+
+    function getAccessory(req,res){
+        res.send(_.filter(productModel,{accessory : true}));
+    }
+
+    function getCarKit(req,res){
+        res.send(_.filter(productModel,{carKit : true}));
     }
 }

@@ -24,7 +24,6 @@
         //Check if user is logged in
         function isLoggedIn(){
             if($rootScope.currentUser){
-                console.log("User is logged in"+$rootScope.currentUser.username)
                 $scope.user=$rootScope.currentUser;
                 return true;
             }
@@ -32,13 +31,18 @@
                 return false;
             }
         }
+
         function logout(){
-            UserService.setCurrentUser(null);
-            $location.url("/home");
+            UserService
+                .logout()
+                .then(function(res){
+                    UserService.setCurrentUser(null);
+                    $location.url("/home");
+                },function(err){
+                    $scope.message ="error"
+                });
         }
-        function search(){
-            console.log("search!");
-        }
+
         function currentNotHome(){
             if($location.path()!="/home"){
                 return true;

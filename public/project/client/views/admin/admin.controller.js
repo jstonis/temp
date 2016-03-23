@@ -13,8 +13,15 @@
         $scope.updateProduct=updateProduct;
         var callback=null;
 
-        $scope.products=ProductsService.findAllProducts();
-        console.log($scope.products);
+        function findAll(){
+            ProductsService
+            .findAllProducts()
+            .then(function(res){
+                $scope.products = res.data;
+            })
+        }
+
+        findAll();
 
         function addProduct(product){
             $scope.message = null;
@@ -33,15 +40,22 @@
                 return;
             }
 
-            var callback=null;
-            ProductsService.createProduct(product,callback);
-            callback=null;
-            $scope.products=ProductsService.findAllProducts();
+            ProductsService
+                .createProduct(product)
+                .then(function(res){
+                    findAll();
+                },function(err){
+                    $scope.message= "err getting products"
+                });
         }
         function removeProduct(product){
-            var callback=null;
-            ProductsService.deleteProductById(product._id,callback);
-            $scope.products=ProductsService.findAllProducts();
+            ProductsService
+                .deleteProductById(product._id)
+                .then(function(res){
+                    findAll();
+                },function(err){
+                    $scope.message="err"
+                });
 
         }
         function selectProduct(index){
@@ -55,17 +69,7 @@
 
         }
         function updateProduct(product){
-            var callback=null;
 
-            if($scope.products.length>0) {
-                product._id=$scope.products[$scope.selectedFormIndex]._id;
-                $scope.products[$scope.selectedFormIndex].productName=UserService.updateProduct($scope.products[$scope.selectedFormIndex]._id,product,callback).productName;
-                $scope.products[$scope.selectedFormIndex].description=UserService.updateProduct($scope.products[$scope.selectedFormIndex]._id,product,callback).description;
-                $scope.products[$scope.selectedFormIndex].accessory=UserService.updateProduct($scope.products[$scope.selectedFormIndex]._id,product,callback).accessory;
-                $scope.products[$scope.selectedFormIndex].price=UserService.updateProduct($scope.products[$scope.selectedFormIndex]._id,product,callback).price;
-                $scope.products[$scope.selectedFormIndex].kit=UserService.updateProduct($scope.products[$scope.selectedFormIndex]._id,product,callback).kit;
-
-            }
         }
     }
 })();

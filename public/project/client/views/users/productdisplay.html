@@ -1,15 +1,15 @@
+<div style="margin-left:240px">
 <div class="row">
     <div class="col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-1 main">
-        <img src="{{product.image}}" height="200px" width="200px" alt="..." class="img-thumbnail">
-        <p>{{product.numOfLikes}} Likes</p>
+        <img src="{{model.product.image}}" height="200px" width="200px" alt="..." class="img-thumbnail">
+        <p>{{model.product.numOfLikes}} Likes</p>
     </div>
 
 
     <div class="col-sm-1 col-sm-offset-1 col-md-1 col-md-offset-1 main">
         <br>
-        <br>
-        <br>
-        <h1>${{product.price}}</h1>
+        <h1>{{model.product.productName}}</h1>
+        <h2>${{model.product.price}}</h2>
     </div>
 
 
@@ -20,15 +20,14 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-
-
-        <button class="btn btn-default" style="width:120px;height:35px" ng-hide="addToCart()" ng-click="follow()" role="button">Add to Cart</button>
-        <br>
-        <button class="btn btn-default" style="width:120px;height:35px" ng-hide="likeProduct()" ng-click="follow()" role="button">Like</button>
+            <button class="btn btn-default" style="width:120px;height:35px" ng-click="addToCart()" role="button">Add to Cart</button>
+            {{message}}
+            <br>
+            <button class="btn btn-default" style="width:120px;height:35px" ng-hide="likeProduct()" ng-click="follow()" role="button">Like</button>
  <!--       <br>
         <button class="btn btn-default" style="width:120px;height:35px" ng-hide="writeReview()" ng-click="follow()" role="button">Write a Review</button>-->
-</div>
             </div>
+        </div>
     </div>
 
 </div>
@@ -44,9 +43,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="review in reviews">
+            <tr ng-repeat="review in model.reviews">
                 <td>
-                    <a href="#/profile/{{review.userId}}">{{review.name}}</a>
+                    <a href="#/profile/{{review.userId}}">@{{review.user}}</a>
                 </td>
                 <td>
                     {{review.review}}
@@ -61,8 +60,9 @@
         <h2>Product Description:</h2>
         <div class="panel panel-default">
             <div class="panel-body">
-                {{product.description}}
+                {{model.product.description}}
                 </div>
             </div>
     </div>
+</div>
 </div>

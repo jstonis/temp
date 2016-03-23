@@ -8,19 +8,28 @@
             $routeProvider
                 .when("/register", {
                     templateUrl: "views/users/register.view.html",
-                    controller: "RegisterController"
+                    controller: "RegisterController",
+                    controllerAs: 'model'
+                })
+                .when("/search", {
+                    templateUrl: "views/users/search.view.html",
+                    controller: "SearchController",
+                    controllerAs: 'model'
                 })
                 .when("/login", {
                     templateUrl: "views/users/login.view.html",
-                    controller: "LoginController"
+                    controller: "LoginController",
+                    controllerAs: 'model'
                 })
-                .when("/profile/:id", {
+                .when("/profile/:userId", {
                     templateUrl: "views/users/profile.view.html",
-                    controller: "ProfileController"
+                    controller: "ProfileController",
+                    controllerAs: 'model'
                 })
                 .when("/admin", {
                  templateUrl: "views/admin/admin.view.html",
-                 controller: "AdminController"
+                 controller: "AdminController",
+                    controllerAs: 'model'
                  })
                  .when("/home", {
                  templateUrl: "views/home/home.view.html",
@@ -30,50 +39,80 @@
                  })
                  .when("/forms", {
                  templateUrl: "views/forms/forms.view.html",
-                   controller: "FormController"
+                   controller: "FormController",
+                    controllerAs: 'model'
                  })
                 .when("/accessories", {
                     templateUrl: "views/users/accessories.html",
-                    controller: "AccessoriesController"
+                    controller: "AccessoriesController",
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
                 .when("/carbrands", {
                     templateUrl: "views/users/carbrands.html",
-                    controller: "CarBrandsController"
+                    controller: "CarBrandsController",
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
                 .when("/carkits", {
                     templateUrl: "views/users/carkits.html",
-                    controller: "CarKitsController"
+                    controller: "CarKitsController",
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
-                .when("/carts", {
+                .when("/cart", {
                     templateUrl: "views/users/cart.html",
-                    controller: "CartController"
+                    controller: "CartController",
+                    controllerAs: 'model',
+                    resolve:{
+                        checkLoggedIn: checkLoggedIn
+                    }
                 })
                 .when("/exteriorcleaning", {
                     templateUrl: "views/users/exteriorcleaning.html",
-                    controller: "ExteriorCleaningController"
+                    controller: "ExteriorCleaningController",
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
                 .when("/finishorder", {
                     templateUrl: "views/users/finishorder.html",
-                    controller: "FinishOrderController"
+                    controller: "FinishOrderController",
+                    controllerAs: 'model'
                 })
                 .when("/interiorcleaning", {
                     templateUrl: "views/users/interiorcleaning.html",
-                    controller: "InteriorCleaningController"
+                    controller: "InteriorCleaningController",
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
                 .when("/orderconfirmation", {
                     templateUrl: "views/users/orderconfirmation.html",
-                    controller: "OrderConfirmationController"
+                    controller: "OrderConfirmationController",
+                    controllerAs: 'model'
                 })
                 .when("/productdisplay/:productId", {
                     templateUrl: "views/users/productdisplay.html",
-                    controller: "ProductDisplayController"
+                    controller: "ProductDisplayController",
+                    controllerAs: 'model',
+                    resolve:{
+                        getLoggedIn: getLoggedIn
+                    }
                 })
                 .otherwise({
                     redirectTo: "home"
-
-
                 });
         })
+
     var checkAdmin = function($q, $timeout, $http, $location, $rootScope)
     {
         var deferred = $q.defer();

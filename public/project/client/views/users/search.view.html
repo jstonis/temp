@@ -1,0 +1,46 @@
+<div class="container" style="margin-left:150px">
+       <div ng-if="model.message" class="alert alert-danger" role="alert">{{model.message}}</div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong><i class="fa fa-list panel-ico"></i>Search</strong>
+        </div>
+        <div class="panel-body">
+        <div class="col-md-4">
+        <input class="form-control col-md-4" type="text" ng-model="model.search" placeholder="Search" ng-change="model.queryChange()" />
+        </div>
+        <table class="table" ng-if="model.filteredItems.length >0">
+            <thead>
+            <tr>
+                <td>
+                    Product
+                </td>
+                <td>
+                    Description
+                </td>
+                <td>
+                    Price
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in model.filteredItems">
+                <td>
+                    <a ng-href={{'#/productdisplay/'+item._id}}>{{item.productName}}</a>
+                </td>
+                <td>
+                    {{item.description}}
+                </td>
+                <td>
+                    {{item.price}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <pagination boundary-links="true" max-size="8" items-per-page="itemsPerPage" total-items="filterLength" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+
+        
+
+        </div>
+    </div>
+</div>

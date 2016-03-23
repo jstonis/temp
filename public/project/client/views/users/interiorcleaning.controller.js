@@ -8,12 +8,34 @@
 
 
     function InteriorCleaningController($scope, UserService, $location, $rootScope, ProductsService){
-        $scope.interiorProducts=ProductsService.getInteriorProducts();
-        $scope.addItem=addCart;
+        ProductsService
+            .getInteriorProducts()
+            .then(function(res){
+                $scope.interiorProducts= res.data;
+            },function(err){
+                $scope.message ="err";
+            });
+            
+        $scope.addToCart=addToCart;
 
-        function addCart(accessory){
-            UserService.addToCart(accessory);
+        function addToCart(product){
+            if(!$rootScope.currentUser){
+                $scope.message ="Please sign in";
+                return
+            }
+            UserService
+                .addToCart(product)
+                .then(function(res){
+                    if(res.data.added = true){
+                        $location.url("/cart");
+                    }else{
+                        $scope.message = res.data.message;
+                    }
+                },function(err){
+                    $scope.message ="err adding to cart"
+                });
         }
+
 
 
     }

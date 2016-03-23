@@ -8,23 +8,29 @@
        .controller("LoginController", LoginController)
 
 
-    function LoginController($scope, UserService, $location, $rootScope){
-            $scope.login=login;
-            $scope.message=null;
+    function LoginController(UserService, $location, $rootScope){
+        var self=this;
+
+        self.login=login;
 
         function login(user){
 
-            var callback=null;
-            var user=UserService.findUserByCredentials(user.username,user.password,callback);
+            if(!user) {
+                return;
+            }
 
-            if(user){
-                $rootScope.currentUser=user;
-                UserService.setCurrentUser(user);
-                $location.url("/profile/"+UserService.getCurrentUser()._id);
-            }
-            else{
-                $scope.message = "Incorrect user details. Try again!";
-            }
+
+            UserService
+                .login({username:user.username,
+                        password: user.password})
+                .then(function(response){
+                    if(response.data){
+                        UserService.setCurrentUser(response.data);
+                        $location.url("/profile");
+                    }else{
+                        self.message = "No such user"
+                    }
+                });
         }
     }
 
