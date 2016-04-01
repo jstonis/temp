@@ -1,4 +1,6 @@
-var forms = require("./form.mock.json");
+var mongoose = require('mongoose'),
+    Form = mongoose.model('Form');
+
 module.exports = function() {
     var api = {
         findFormByTitle: findFormByTitle,
@@ -41,18 +43,20 @@ module.exports = function() {
         return null;
     }
 
-    function createFormForUser(userId, form, callback){
-        var form = {
-            _id: (new Date).getTime(),
+    function createFormForUser(req,res,userId, form){
+        var form = new Form({
             userId: userId,
             title: form.title,
             fields: []
-        };
-        forms.push(form);
-       // allForms.forms.push(form);
-        //callback=allForms.forms;
-        callback=forms;
-        return callback;
+        });
+        form.save(function(err){
+            if(err){
+                console.log(err)
+                res.send({error: true, message:"Error saving form"})
+                return
+            }
+            res.json(form);
+        })
 
     }
 

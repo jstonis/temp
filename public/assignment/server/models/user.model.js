@@ -1,4 +1,6 @@
-var mock = require("./user.mock.json");
+var mongoose = require('mongoose'),
+    User = mongoose.model('User');
+
 module.exports = function() {
     var api = {
         createUser: createUser,
@@ -13,47 +15,49 @@ module.exports = function() {
     return api;
 
 
-    function createUser (user) {
-        var userNew = {
-            _id: (new Date).getTime(), 
+    function createUser (req,res,user) {
+        var userNew = new User({
             username: user.username,
             password: user.password,
-            email : user.email
-        };
-        mock.push(userNew);
-        //currentUsers.users.push(user);
-        return userNew;
+            emails : [user.email]
+        });
+
+        userNew.save(function(err){
+            if(err){
+                console.log(err)
+                res.send({error: true, message:"Error saving user"})
+                return
+            }
+            req.session.currentUser = userNew;
+            res.json(userNew);
+        })
     }
 
-    function findUserByUsername (username) {
-        var found ={};
-        mock.forEach(function(user){
-            if (user.username == username){
-                found = user;
+    function findUserByUsername (req,res,username) {
+
+        User.find({username: username},function(err,user){
+            if(err){
+                return res.send({error:true, message:"Unable to find user"})
+            }else if(!user){
+                res.json({message: "Username not found!"});
+            }else{
+                res.json(user);
             }
         })
-        return found;
     }
 
-    function findUserByCredentials(credentials, callback) {
-        /* for (var u in currentUsers.users) {
-         //  console.log(currentUsers.users[u].username);
-         if (currentUsers.users[u].username === username &&
-         currentUsers.users[u].password === password) {
-         callback=currentUsers.users[u];
-         return callback;
-         }
-         }*/
+    function findUserByCredentials(req,res,credentials) {
 
-        for (var u in mock) {
-            //  console.log(currentUsers.users[u].username);
-            if (mock[u].username === credentials.username &&
-                mock[u].password === credentials.password) {
-                callback=mock[u];
-                return callback;
+        User.find({username: credentials.username,password: credentials.password},function(err,user){
+            if(err){
+                return res.send({error:true, message:"Unable to find user"})
+            }else if(!user){
+                res.json({message: "Invalid credentials"});
+            }else{
+                req.session.currentUser = user;
+                res.json(user);
             }
-        }
-        return null;
+        })
     }
 
 

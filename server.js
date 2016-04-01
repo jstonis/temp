@@ -2,8 +2,15 @@ var express = require('express');
 var app = express();
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var mongoose = require('./mongoose');
 
 
+// Initialize Models
+console.log("Models are being loaded now");
+mongoose.loadModels();
+
+//connect to db
+mongoose.connect();
 
 
 // parse application/x-www-form-urlencoded

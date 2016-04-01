@@ -1,4 +1,6 @@
 var formModel = require("../models/form.model.js")();
+var mongoose = require('mongoose'),
+    Form = mongoose.model('Form');
 
 module.exports = function(app) {
 
@@ -11,8 +13,12 @@ module.exports = function(app) {
 
     function getFieldsOfForm(req, res){
         var formId=req.params.formId;
-        var fields=formModel.getAllFieldsByFormId(formId);
-        res.json(fields);
+        Form.find({_id: formId},function(err,forms){
+            if(err){
+                return res.send({error:true,message:"error getting form fields"})
+            }
+            res.json(forms)
+        })
     }
 
     function getFieldById(req, res){
@@ -28,14 +34,28 @@ module.exports = function(app) {
     function deleteFieldById(req, res){
         var formId=req.params.formId;
         var fieldId=req.params.fieldId;
-        var data = formModel.deleteFieldById(formId,fieldId);
-        res.json(data);
+        var update = {$pull:{fields: {_id:fieldId}}};
+        var options = {new: true}
+        Form.findByIdAndUpdate({_id: formId},update,options,function(err,forms){
+            if(err){
+                console.log(err);
+                return res.send({error:true,message:"error deleting fields"})
+            }
+            res.json(forms)
+        })
     }
     function createNewField(req, res){
         var formId=req.params.formId;
         var field=req.body;
-        var data = formModel.createFieldByFormId(formId, field);
-        res.json(data);
+        var update = {$push:{fields: field}};
+        var options = {new: true}
+        Form.findByIdAndUpdate({_id: formId},update,options,function(err,forms){
+            if(err){
+                console.log(err);
+                return res.send({error:true,message:"error adding form fields"})
+            }
+            res.json(forms)
+        })
     }
 
     function updateFieldById(req, res){

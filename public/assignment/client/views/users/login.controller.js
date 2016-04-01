@@ -22,9 +22,9 @@
                 .login({username:user.username,
                         password: user.password})
                 .then(function(response){
-                    console.log(user.username);
+                    //console.log(user.username);
                     if(response.data){
-                        UserService.setCurrentUser(response.data);
+                        UserService.setCurrentUser(response.data[0]);
                         $location.url("/profile");
                     }else{
                         vm.message = "No such user"

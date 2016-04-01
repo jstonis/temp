@@ -1,6 +1,11 @@
 /**
  * Created by Josceyn on 3/18/2016.
  */
+
+var mongoose = require('mongoose'),
+    User = mongoose.model('User');
+
+
 module.exports = function(app, formsModel, userModel) {
 
     app.post("/api/assignment/user", createNewUser);
@@ -34,9 +39,7 @@ module.exports = function(app, formsModel, userModel) {
     }
     function createNewUser(req, res) {
         var user = req.body;
-        var newUser = userModel.createUser(user);
-        req.session.currentUser = newUser;
-        res.json(newUser);
+        userModel.createUser(req,res,user);
     }
 
     function getAllUsers(req, res) {
@@ -58,12 +61,7 @@ module.exports = function(app, formsModel, userModel) {
     function getUserByUsername(req, res) {
 
         var username = req.query.username;
-        var user = userModel.findUserByUsername(username);
-        if (user) {
-            res.json(user);
-            return;
-        }
-        res.json({message: "Username not found!"});
+        userModel.findUserByUsername(req,res,username);
     }
 
     function getUserByCredentials(req, res) {
@@ -103,17 +101,22 @@ module.exports = function(app, formsModel, userModel) {
     function login(req, res) {
         var credentials = req.body;
 
-        var user = userModel.findUserByCredentials(credentials);
-
-        req.session.currentUser = user;
-        res.json(user);
+        userModel.findUserByCredentials(req,res,credentials);
     }
 
     function profile(req, res) {
         var userId = req.params.userId;
-        var user = userModel.findUserById(userId);
-        var form = formsModel.findAllFormsForUser(userId);
-        res.json(user);
+        // var user = userModel.findUserById(userId);
+        // var form = formsModel.findAllFormsForUser(userId);
+        // res.json(user);
+        User.find({_id: userId},function(err,user){
+            if(err){
+                console.log(err)
+                res.send({error: true, message:"Error getting profile"})
+                return
+            }
+            res.json(user);
+        })
     }
 
     function loggedin(req, res) {

@@ -1,6 +1,10 @@
 /**
  * Created by Josceyn on 3/19/2016.
  */
+
+var mongoose = require('mongoose'),
+    Form = mongoose.model('Form');
+
 module.exports = function(app, formsModel, userModel) {
 
     app.get("/api/assignment/user/:userId/form", getFormsOfUser);
@@ -12,8 +16,12 @@ module.exports = function(app, formsModel, userModel) {
 
     function getFormsOfUser(req, res){
         var userId=req.params.userId;
-        var forms=formsModel.findAllFormsForUser(userId);
-        res.json(forms);
+        Form.find({userId: userId},function(err,forms){
+            if(err){
+                return res.send({error:true,message:"error getting form"})
+            }
+            res.json(forms)
+        })
     }
     function getFormById(req, res){
         var id=req.params.formId;
@@ -26,22 +34,33 @@ module.exports = function(app, formsModel, userModel) {
     }
     function deleteFormById(req, res){
         var id=req.params.formId;
-        formsModel.deleteFormById(id)
-        res.send(200);
+        Form.findOneAndRemove({_id:id},function(err){
+            if(err){
+                res.send({error:true,message:"Unable to remove form"})
+                return
+            }
+            res.send(200)
+        })
 
     }
     function createNewForm(req, res){
        var form=req.body;
         var userId=req.params.userId;
-        formsModel.createFormForUser(userId,form);
-        res.send(200);
+        formsModel.createFormForUser(req,res,userId,form);
     }
 
     function updateFormById(req, res){
-        var id=req.params.formId;
-        var form=req.body;
-        formsModel.updateFormById(id,form);
-        res.send(200);
+        var formId=req.body._id;
+        var title=req.body.title;
+        var update = {$set:{title:title}}
+        var options = {new: true}
+        Form.findByIdAndUpdate({_id: formId},update,options,function(err,forms){
+            if(err){
+                console.log(err);
+                return res.send({error:true,message:"error updating form"})
+            }
+            res.send(200)
+        })
     }
 
 

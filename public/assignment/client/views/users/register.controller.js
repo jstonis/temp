@@ -38,6 +38,10 @@
 
                 UserService.createUser($scope.user)
                     .then(function(response){
+                        if(response.data.error){
+                            alert(response.data.message||"error")
+                            return
+                        }
                          UserService.setCurrentUser(response.data);
                          $location.url("/profile");
                     },function(err){

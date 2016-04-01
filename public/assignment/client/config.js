@@ -60,7 +60,7 @@
         UserService
             .getCurrentUser()
             .then(function(response){
-                var currentUser = response.data;
+                var currentUser = response.data[0];
                 UserService.setCurrentUser(currentUser);
                 deferred.resolve();
             });
@@ -74,7 +74,7 @@
         UserService
             .getCurrentUser()
             .then(function(response) {
-                var currentUser = response.data;
+                var currentUser = response.data[0];
                 if(currentUser) {
                     UserService.setCurrentUser(currentUser);
                     deferred.resolve();
