@@ -23,10 +23,15 @@ module.exports.loadModels = function () {
     require('./public/assignment/server/models/field.schema.server.js');
     require('./public/assignment/server/models/form.schema.server.js');
     require('./public/assignment/server/models/user.schema.server.js');
+
+  //model files for project
+    require('./public/project/server/models/user.schema.server.js');
+    require('./public/project/server/models/product.schema.server.js');
+    require('./public/project/server/models/review.schema.server.js');
 };
 
 // Initialize Mongoose
-module.exports.connect = function () {
+module.exports.connect = function (cb) {
   var _this = this;
 
   var db = mongoose.connect(dbconfig.uri, dbconfig.options, function (err) {
@@ -39,6 +44,7 @@ module.exports.connect = function () {
       // Enabling mongoose debug mode if required
       mongoose.set('debug', dbconfig.debug);
       console.log("Connected to Db")
+      if(cb){cb()}
     }
   });
 };

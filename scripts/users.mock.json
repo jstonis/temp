@@ -1,0 +1,41 @@
+[{
+    "firstName": "Alice",
+    "lastName": "Wonderland",
+    "username": "alice",
+    "password": "alice",
+    "roles": ["student"],
+    "cartItems": [],
+    "likedProducts": [],
+    "following": ["234", "345"],
+    "email" : "aliceinwonderland@gmail.com"
+}, {
+    "firstName": "Bob",
+    "lastName": "Hope",
+    "username": "bob",
+    "password": "bob",
+    "roles": ["admin"],
+    "cartItems": []
+}, {
+    "firstName": "Charlie",
+    "lastName": "Brown",
+    "username": "charlie",
+    "password": "charlie",
+    "roles": ["faculty"],
+    "cartItems": []
+}, {
+    "firstName": "Dan",
+    "lastName": "Craig",
+    "username": "dan",
+    "password": "dan",
+    "roles": ["faculty", "admin"],
+    "cartItems": []
+}, {
+    "firstName": "Edward",
+    "lastName": "Norton",
+    "username": "ed",
+    "password": "ed",
+    "roles": ["student"],
+    "cartItems": [],
+    "likedProducts": [],
+    "following": []
+}]

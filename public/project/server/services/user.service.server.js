@@ -1,4 +1,6 @@
 var userModel = require('../models/user.mock.json'),
+    mongoose = require('mongoose'),
+    UserPro = mongoose.model('UserPro'),
     _ = require('lodash');
 
 module.exports = function(app, model) {
@@ -18,8 +20,7 @@ module.exports = function(app, model) {
 
     function register(req, res) {
         var user = req.body;
-        var userNew = {
-            _id: (new Date).getTime(), 
+        var userNew = new UserPro({
             username: user.username,
             password: user.password,
             email : user.email,
@@ -27,22 +28,29 @@ module.exports = function(app, model) {
             roles :['student'],
             likedProducts:[],
             following : []
-        };
-        userModel.push(userNew);
-        req.session.currentUser = userNew;
-        res.json(userNew);
+        });
+        userNew.save(function(err){
+            if(err){
+                throw err;
+                res.send({error:true,message:"error registering"})
+                return
+            }
+            req.session.currentUser = userNew;
+            res.send(userNew);
+        })
     }
 
     function login(req, res) {
         var credentials = req.body;
-        var user = _.find(userModel,credentials);
-        if(user){
+        UserPro.findOne(credentials,function(err,user){
+            if(err){
+                throw err;
+                res.send({error:true,message:"error lgoin"})
+                return
+            }
             req.session.currentUser = user;
-            res.json(user);            
-        }else{
-            res.send(null);
-        }
-
+            res.send(user)
+        })
     }
 
     function logout(req, res) {
@@ -53,7 +61,14 @@ module.exports = function(app, model) {
     function loggedin(req, res) {
         var user = req.session.currentUser;
         if(user){
-            res.json(_.find(userModel,{_id: user._id}));
+            UserPro.findOne({_id:user._id},function(err,user){
+                if(err){
+                    throw err;
+                    res.send({error:true,message:"error quering user from db"})
+                    return
+                }
+                res.send(user);
+            })
         }else{
             res.send(null);
         }
@@ -67,20 +82,43 @@ module.exports = function(app, model) {
             res.send({added:"false",message:"Either product or user is missing"})
             return
         }
-
-        userModel.forEach(function(u){
-            if(user.username  == u.username){
-                
-                var inCart = _.find(u.cartItems,{_id:product._id});
-                if(inCart){
-                    inCart.quantity ++;
-                }else{
-                    product.quantity = 1;
-                    u.cartItems.push(product);
-                }
+        UserPro.findOne({_id:user._id},function(err,user){
+            if(err){
+                throw err;
+                res.send({error:true,message:"error quering user from db"})
+                return
             }
-        });
-        res.send({added: true});
+            var inCart = _.find(user.cartItems,{_id:product._id});
+                if(inCart){
+                        var query ={_id:user._id,"cartItems._id":product._id};
+                        var update = {$inc: {"cartItems.$.quantity":1}}
+                        var option = {new : true}
+                        UserPro
+                            .findOneAndUpdate(query,update,option,function(err,user){
+                                if(err){
+                                    throw err;
+                                    res.send({error:true,message:"error adding to cart"})
+                                    return
+                                }
+                                res.send({added:true});
+                            })
+                }else{
+                        product.quantity = 1;   
+                        var query ={_id:user._id};
+                        var update = {$push:{cartItems:product}}
+                        var option = {new : true}
+                        UserPro
+                            .findOneAndUpdate(query,update,option,function(err,user){
+                                if(err){
+                                    throw err;
+                                    res.send({error:true,message:"error adding to cart"})
+                                    return
+                                }
+                                res.send({added:true});
+                            })
+                }
+        })
+
     }
 
     function removeFromCart(req,res){
@@ -91,12 +129,18 @@ module.exports = function(app, model) {
             res.send({message:"Either product or user is missing"})
             return
         }
-
-        var user =_.find(userModel,{username: user.username});
-        console.log(user);
-        console.log(productId);
-        _.remove(user.cartItems,{_id: productId})
-        res.send(user.cartItems);
+        var query ={_id:user._id};
+        var update = {$pull:{cartItems:{_id:productId}}}
+        var option = {new : true}
+        UserPro
+            .findOneAndUpdate(query,update,option,function(err,user){
+                if(err){
+                    throw err;
+                    res.send({error:true,message:"error adding to cart"})
+                    return
+                }
+                res.send(user.cartItems);
+            })
     }
 
     function updateUser(req,res){
