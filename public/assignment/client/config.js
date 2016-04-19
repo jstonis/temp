@@ -25,8 +25,11 @@
                     }
                 })
                 .when("/admin", {
-                 templateUrl: "views/admin/admin.view.html"
-              //   controller: "AdminController"
+                    templateUrl: "views/admin/admin.view.html",
+                    controller: "AdminController",
+                    resolve:{
+                        isAdmin: isAdmin
+                    }
                  })
                  .when("/home", {
                  templateUrl: "views/home/home.view.html",
@@ -60,7 +63,7 @@
         UserService
             .getCurrentUser()
             .then(function(response){
-                var currentUser = response.data[0];
+                var currentUser = response.data;
                 UserService.setCurrentUser(currentUser);
                 deferred.resolve();
             });
@@ -74,10 +77,28 @@
         UserService
             .getCurrentUser()
             .then(function(response) {
-                var currentUser = response.data[0];
+                var currentUser = response.data;
                 if(currentUser) {
                     UserService.setCurrentUser(currentUser);
                     deferred.resolve();
+                } else {
+                    deferred.reject();
+                    $location.url("/home");
+                }
+            });
+
+        return deferred.promise;
+    }
+
+    function isAdmin(UserService, $q, $location){
+
+        var deferred = $q.defer();
+        UserService
+            .getCurrentUser()
+            .then(function(response) {
+                var currentUser = response.data;
+                if(currentUser && currentUser.roles.indexOf('admin') >= 0 ) {
+                    deferred.resolve('ok');
                 } else {
                     deferred.reject();
                     $location.url("/home");

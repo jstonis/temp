@@ -3,17 +3,24 @@
  */
 
 var mongoose = require('mongoose'),
-    User = mongoose.model('User');
+    User = mongoose.model('User'),
+    passport = require('passport');
 
 
 module.exports = function(app, formsModel, userModel) {
 
-    app.post("/api/assignment/user", createNewUser);
+    /*
+     * Admin endpoints
+     */
+    app.post("/api/assignment/admin/user", isAdmin,createNewUser);
+    app.get("/api/assignment/admin/user", isAdmin, getUser);
+    app.get("/api/assignment/admin/user/:id", isAdmin, getUserById);
+    app.delete("/api/assignment/admin/user/:id", isAdmin, deleteUserById);
+    app.put("/api/assignment/admin/user/:id", isAdmin, updateUserById);
+    // admin endpoints end
+
     app.get("/api/assignment/user", getUser);
-    app.get("/api/assignment/user/:id", getUserById);
     app.get("/api/assignment/user?username=alice&password=wonderland", getUserByCredentials);
-    app.put("/api/assignment/user/:id", updateUserById);
-    app.delete("/api/assignment/user/:id", deleteUserById);
     app.post("/api/assignment/login", login);
     app.get("/api/assignment/loggedin", loggedin);
     app.post("/api/assignment/logout", logout);
@@ -37,14 +44,33 @@ module.exports = function(app, formsModel, userModel) {
         }
 
     }
+
     function createNewUser(req, res) {
         var user = req.body;
-        userModel.createUser(req,res,user);
+
+        if(!user){
+            res.send({message:"user is required"});
+            return
+        }
+
+        var user = new User(user);
+        user.save(function(err){
+            if(err){
+                res.send({error:true,message:err.message})
+                return
+            }
+            res.send({message:"OK"});
+        })
     }
 
     function getAllUsers(req, res) {
-        var users = userModel.findAllUsers();
-        res.json(users);
+        User.find({},function(err,users){
+            if(err){
+                res.send({error: true, message:"Error getting users"})
+                return
+            }
+            res.json(users);
+        })
     }
 
     function getUserById(req, res) {
@@ -77,38 +103,62 @@ module.exports = function(app, formsModel, userModel) {
     }
 
     function updateUserById(req, res) {
-        var id = req.params.id;
-        var user = req.body;
-        user = userModel.updateUser(id, user);
-        if (user) {
-            res.json(user);
-            return;
-        }
-        res.json({message: "user not found!"});
+          var userId = req.params.id;
+          var user = req.body;
 
+          var query = {_id : userId};
+          var update = {$set:{
+                            username: user.username,
+                            password: user.password,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            roles: user.roles
+                        }}
+
+          User.update(query,update,{new:true},function(err,user){
+            if(err){
+                res.send({error:true,message:"error  updating"});
+                return
+            }
+            res.send(200)
+
+          })
 
     }
 
     function deleteUserById(req, res) {
-        var id = req.params.id;
-        if (userModel.deleteUserById(id)) {
-            res.send(200);
-            return;
-        }
-        res.json({message: "User not found!"});
+        var userId = req.params.id;
+        User.remove({_id : userId},function(err){
+            if(err){
+                res.send({error:true,message:"error removing user"})
+                return;
+            }
+            res.send("OK")
+        })
     }
 
-    function login(req, res) {
-        var credentials = req.body;
+    function login(req, res, next) {
+      passport.authenticate('local', function (err, user, info) {
+        if (err || !user) {
+          res.status(400).send(info);
+        } else {
 
-        userModel.findUserByCredentials(req,res,credentials);
+          user.password = undefined;
+          user.salt = undefined;
+
+          req.login(user, function (err) {
+            if (err) {
+              res.status(400).send(err);
+            } else {
+              res.json(user);
+            }
+          });
+        }
+      })(req, res, next);
     }
 
     function profile(req, res) {
         var userId = req.params.userId;
-        // var user = userModel.findUserById(userId);
-        // var form = formsModel.findAllFormsForUser(userId);
-        // res.json(user);
         User.find({_id: userId},function(err,user){
             if(err){
                 console.log(err)
@@ -120,44 +170,51 @@ module.exports = function(app, formsModel, userModel) {
     }
 
     function loggedin(req, res) {
-        if (req.session) {
-            return res.json(req.session.currentUser);
-        } else {
-            return res.json(null);
-        }
-
+        res.send(req.isAuthenticated() ? req.user : null);
     }
 
     function logout(req, res) {
-        req.session.destroy();
+        req.logOut();
         res.send(200);
     }
 
     function register(req, res) {
         var user = req.body;
-        user = userModel.createUser(user);
-        req.session.currentUser = user;
-        res.json(user);
+
+        if(!user){
+            res.send({message:"user is required"});
+            return
+        }
+
+        var user = new User(user);
+        user.save(function(err){
+            if(err){
+                res.send({error:true,message:err.message})
+                return
+            }
+              req.login(user, function (err) {
+                if (err) {
+                  res.status(400).send(err);
+                } else {
+                  res.json(user);
+                }
+              });
+            res.send({message:"OK"});
+        })
     }
+
+    function isAdmin(req,res,next) {
+
+        if(!req.user){
+            res.send(403)
+            return
+        }
+
+        if(req.user.roles.indexOf("admin") >= 0) {
+            next();
+        }else{
+            res.send(403)
+        }
+    }
+
 }
-
-
-  /*  function getLikes(req, res) {
-        var userId = req.param.userId;
-        var user = userModel.findUserById(userId);
-        var likes = user.likes;
-        res.send(likes);
-    }
-
-    function login(req, res) {
-        var credentials = req.body;
-        var user = userModel.findUser(credentials.username, credentials.password);
-        res.json(user);
-    }
-
-    function like(req, res) {
-        var userId = req.params.userId;
-        var idIMDB = req.params.idIMDB;
-        var user = userModel.userLikesMovie(userId, idIMDB);
-        res.json(user);
-    }*/

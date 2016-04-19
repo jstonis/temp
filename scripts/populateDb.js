@@ -6,7 +6,8 @@ var users =[];
 mongoose.loadModels();
 var m = require('mongoose');
 var Product = m.model('Product');
-var User = m.model('UserPro');
+var User = m.model('User');
+
 mongoose.connect(function(){
 	Product.remove({}, function(err) { 
 				Product.collection.insert(productsMock,function(err){

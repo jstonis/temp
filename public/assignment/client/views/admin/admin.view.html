@@ -1,43 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
-
-    <title>Dashboard Template for Bootstrap</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="dashboard.css" rel="stylesheet">
-
-    <!--font awesome library for sorting icons -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-
-
-</head>
-
-<body>
 <div class="container-fluid">
     <div class="row">
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1>Users</h1>
-
+            <div class="alert alert-warning" ng-if="error">
+                {{error}}
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                     <tr>
 
-                        <th><i class="fa fa-sort-desc"></i>Username</th>
+                        <th ng-click="toggleSort('username')">
+                            <span class="glyphicon glyphicon-chevron-up" ng-if="sortVal == 'username' && reverse == true"></span>
+                            <span class="glyphicon glyphicon-chevron-down" ng-if="sortVal == 'username' && reverse == false"></span>
+                            Username
+                        </th>
                         <th> <i class="fa fa-sort-desc"></i>Password</th>
+                        <th ng-click="toggleSort('firstName')">
+                            <span class="glyphicon glyphicon-chevron-up" ng-if="sortVal == 'firstName' && reverse == true"></span>
+                            <span class="glyphicon glyphicon-chevron-down" ng-if="sortVal == 'firstName' && reverse == false"></span>
+                            First Name
+                        </th>
+                        <th ng-click="toggleSort('lastName')">
+                            <span class="glyphicon glyphicon-chevron-up" ng-if="sortVal == 'lastName' && reverse == true"></span>
+                            <span class="glyphicon glyphicon-chevron-down" ng-if="sortVal == 'lastName' && reverse == false"></span>
+                            Last Name
+                        </th>
                         <th> <i class="fa fa-sort-desc"></i>Role</th>
                         <th> <i class="fa fa-sort-desc"></i>Actions</th>
                     </tr>
@@ -45,102 +34,57 @@
 
                     <tbody>
 
-                    <tr>
+                        <tr>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" ng-model="newUser.username" class="form-control" placeholder="Username">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" ng-model="newUser.password"  class="form-control" placeholder="Password">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" ng-model="newUser.firstName" class="form-control" placeholder="First Name">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" ng-model="newUser.lastName" class="form-control" placeholder="LastName">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" ng-model="newUser.roles"  class="form-control" placeholder="Role 1, Role 2">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <span class="glyphicon glyphicon-plus" ng-click="createNewUser(newUser)" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-ok" ng-click="updateUser(newUser)" aria-hidden="true"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat= "user in users | orderBy : sortVal : reverse">
+                            <td>{{user.username}}</td>
+                            <td>{{user.password | limitTo : 2}}...</td>
+                            <td>{{user.firstName}}</td>
+                            <td>{{user.lastName}}</td>
+                            <td ><span ng-repeat="role in user.roles">{{role}} |</span></td>
+                            <td>
+                                <div class="input-group">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="deleteUser(user)"></span>
 
-                        <td>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Username">
-                            </div>
-                        </td>
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true" ng-click="setCurrentUser(user)"></span>
+                                </div>
+                            </td>
+                        </tr>
 
-
-                        <td>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Password">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Role 1, Role 2">
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="input-group">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            </div>
-                        </td>
-
-
-
-
-
-                    </tr>
-
-
-                    <tr>
-                        <td>Alice</td>
-                        <td></td>
-                        <td>student</td>
-                        <td>
-                            <div class="input-group">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    <tr>
-                        <td>Bob</td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <div class="input-group">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </div>
-
-
-                        </td>
-                    </tr>
-
-
-                    <tr>
-                        <td>Charlie</td>
-                        <td></td>
-                        <td>faculty | admin</td>
-                        <td>
-
-                            <div class="input-group">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </div>
-
-                        </td>
-                    </tr>
-
-
-
-
+                    </tbody>
                 </table>
             </div>
-            </tbody>
         </div>
     </div>
 </div>
-</div>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></script>
-</body>
-
-</html>

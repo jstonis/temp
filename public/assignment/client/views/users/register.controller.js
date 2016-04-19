@@ -30,27 +30,27 @@
             }
 
             var user = UserService.findUserByUsername(user.username)
-            .then(function(response){
-                if(response.data.username){
-                    $scope.message = "User already exists";
-                    return;   
-                }
+                .then(function(response){
+                    if(response.data.username){
+                        $scope.message = "User already exists";
+                        return;   
+                    }
 
-                UserService.createUser($scope.user)
-                    .then(function(response){
-                        if(response.data.error){
-                            alert(response.data.message||"error")
-                            return
-                        }
-                         UserService.setCurrentUser(response.data);
-                         $location.url("/profile");
-                    },function(err){
-                        $scope.message = "Error creating user"        
-                    });
+                    UserService.register($scope.user)
+                        .then(function(response){
+                            if(response.data.error){
+                                alert(response.data.message||"error")
+                                return
+                            }
+                             UserService.setCurrentUser(response.data);
+                             $location.url("/profile");
+                        },function(err){
+                            $scope.message = "Error creating user"        
+                        });
 
-            },function(err){
-                $scope.message = "Cannot connect to db"
-            });
+                },function(err){
+                    $scope.message = "Cannot connect to db"
+                });
 
             }
 

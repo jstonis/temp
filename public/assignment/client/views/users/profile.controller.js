@@ -22,7 +22,7 @@ function ProfileController($scope, $location, $rootScope, UserService){
         UserService
             .getProfile()
             .then(function(response){
-                $scope.profile=response.data;
+                $scope.profile=response.data[0];
             });
     }
     return init();

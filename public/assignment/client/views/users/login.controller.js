@@ -22,25 +22,11 @@
                 .login({username:user.username,
                         password: user.password})
                 .then(function(response){
-                    //console.log(user.username);
-                    if(response.data){
-                        UserService.setCurrentUser(response.data[0]);
+                    UserService.setCurrentUser(response.data[0]);
                         $location.url("/profile");
-                    }else{
-                        vm.message = "No such user"
-                    }
+                },function(err){
+                    vm.message = "No such user"
                 });
-          /*  var callback=null;
-            var user=UserService.findUserByCredentials(user.username,user.password,callback);
-
-            if(user){
-                $rootScope.currentUser=user;
-                UserService.setCurrentUser(user);
-                $location.url("/profile");
-            }
-            else{
-                $scope.message = "Incorrect user details. Try again!";
-            }*/
         }
     }
 
