@@ -3,6 +3,7 @@ var productModel = require('../models/products.mock.json'),
     userModel = require('../models/user.mock.json'),
     mongoose = require('mongoose'),
     Product = mongoose.model('Product'),
+    populateDb = require('../../../../scripts/populateDb1.js'),
     _ = require('lodash');
 
 module.exports = function(app) {
@@ -22,6 +23,9 @@ module.exports = function(app) {
     
     app.post("/api/project/product", createProduct);
 
+
+    //Populate db enpoint
+    app.get("/api/populate/db",populateDb.populate)
     
     //app.post("/api/project/register", register);
 
@@ -169,4 +173,5 @@ module.exports = function(app) {
             res.send(result);
         })
     }
+
 }

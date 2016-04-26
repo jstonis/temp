@@ -20,9 +20,9 @@
             });
 
             if(!items){
-                self.message ="No match found"
+                vm.message ="No match found"
             }
-            self.filteredItems = items;
+            vm.filteredItems = items;
         }
 
         ProductsService

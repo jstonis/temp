@@ -6,12 +6,19 @@
         .module("FormBuilderApp")
         .controller("AdminController", AdminController)
 
-    function AdminController($scope, $location, $rootScope, UserService, ProductsService){
+    function AdminController($scope, $location, $rootScope, UserService, ProductsService,$http){
         $scope.addProduct=addProduct;
         $scope.removeProduct=removeProduct;
         $scope.selectProduct=selectProduct;
         $scope.updateProduct=updateProduct;
+        $scope.populate = populate;
         var callback=null;
+
+        function populate(){
+            $http.get('/api/populate/db').then(function(res){
+                alert(res.data);
+            });
+        }
 
         function findAll(){
             ProductsService
